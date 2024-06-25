@@ -1,0 +1,671 @@
+#include<iostream>
+#include<fstream>
+#include<string.h>
+#include<conio.h>
+#include<windows.h>
+
+using namespace std;
+
+class atm
+{
+public:
+	//Datamembers
+	char name[20], password[20];
+	float balance;
+public:
+	//Default Constructor
+	atm() {
+		ofstream outfile;
+		outfile.open("atm_data.txt", ios::app);
+		outfile.close();
+	}
+
+	//Member Functions Prototype
+	void signup();
+	void login();
+	void deposit();
+	void withdraw();
+	void transfer();
+	void check_balance();
+	void account_details();
+	void delete_account();
+	void clear_screen();
+
+	~atm() {
+
+	}
+};
+
+void atm::signup()
+{
+	cout << "\n\t\t\t-----------SIGN UP-----------\n";
+	cout << "\n\n\t\t\tEnter your name : ";
+	cin >> name;
+
+	ifstream file;
+	file.open("atm_data.txt", ios::in);
+	int flag = 0;
+	while (!file.eof())													//This C++ code is attempting to search for a given name in a file. The code first declares a flag variable and sets it to 0. The code then uses a while loop to loop through the file until the end of the file is reached. Inside the loop, a temporary character array is declared and the file is read into it. The code then compares the given name to the value in the temporary array. If they are the same, the flag is set to 1 and the loop is broken.
+	{
+		char temp[20];
+		file >> temp;
+		if (strcmp(name, temp) == 0)									//strcmp() is a C++ function that is used to compare two strings. It returns an integer value based on the comparison between the two strings. If the two strings are equal, it returns 0. If the first string is greater than the second string, it returns a positive value. If the first string is less than the second string, it returns a negative value.
+		{
+			flag = 1;
+			break;
+		}
+	}
+	if (flag == 1)
+	{
+		cout << "\n\t\t\tName already exists try again with a Different Name";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		cout << "\n\n\t\t\tPress any key to Sign Up Again";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		_getch();
+		system("cls");
+		signup();
+	}
+
+	ofstream outfile;
+	outfile.open("atm_data.txt", ios::app);
+	outfile << name << endl;
+	cout << "\n\t\t\tEnter your password : ";
+	cin >> password;
+	outfile << password << endl;
+	cout << "\n\t\t\tEnter your balance : ";
+
+	while (!(cin >> balance))				//In C++, this while loop will continue to run until the user enters a valid input. If the user enters a value that cannot be interpreted as a number, the error flag will be set, and the loop will not terminate until the user enters a valid input that can be converted to a number.
+	{
+		cout << "\n\t\t\tError! Please Enter Your Balance Correctly";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << "." << endl;
+		cout << "\n\t\t\tEnter your balance : ";
+		cin.clear();								//The cin.clear() and cin.ignore() functions are used to clear the input buffer and ignore any invalid characters entered by the user.
+		cin.ignore(100, '\n');
+	}
+
+	while (balance < 500)
+	{
+
+		cout << "\n\t\t\tKindly Enter amount more then or equal to 500 to deposit";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << "." << endl;
+		cout << "\n\t\t\tEnter your balance : ";
+		while (!(cin >> balance))
+		{
+			cout << "\n\t\t\tError! Please Enter Your Balance Correctly";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << "." << endl;
+			cout << "\n\t\t\tEnter your balance : ";
+			cin.clear();
+			cin.ignore(100, '\n');
+		}
+	}
+	outfile << balance << endl;
+	outfile.close();
+
+	cout << "\n\t\t\tYou are successfully registered.";
+	Sleep(1000);
+	cout << ".";
+	Sleep(1000);
+	cout << ".";
+	Sleep(1000);
+	cout << ".";
+	return;
+}
+
+void atm::login()
+{
+	char temp_name[20], temp_password[20];
+	ifstream infile;
+	infile.open("atm_data.txt");
+	cout << "\n\t\t\t-----------LOGIN-----------\n";
+	cout << "\n\n\t\t\tEnter your name : ";
+	cin >> temp_name;
+	cout << "\n\t\t\tEnter your password : ";
+	cin >> temp_password;
+
+	while (!infile.eof())
+	{
+		infile >> name;
+		infile >> password;
+		infile >> balance;
+		if (strcmp(name, temp_name) == 0 && strcmp(password, temp_password) == 0) //The ==0 means that the return value of strcmp is equal to 0, indicating that the two strings are equal.
+		{
+			cout << "\n\t\t\tLoging in please be patient";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << "." << endl;
+			cout << "\n\t\t\tYou are successfully logged in";
+			Sleep(1000);
+			cout << ".";
+			Sleep(1000);
+			cout << ".";
+			Sleep(1000);
+			cout << ".";
+			Sleep(0500);
+			return;
+		}
+	}
+	infile.close();
+
+	cout << "\n\t\t\tInvalid username or password";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << "." << endl;
+
+	cout << "\n\t\t\tLogin again with correct details.";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	clear_screen();
+	login();
+}
+
+void atm::deposit()
+{
+	float amount;
+	cout << "\n\t\t\tEnter the amount to be deposited : ";
+
+	while (!(cin >> amount))
+	{
+		cout << "\n\t\t\tError! Please Enter Your Amount Correctly";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << "." << endl;
+		cout << "\n\t\t\tEnter the amount again to be deposited : ";
+		cin.clear();
+		cin.ignore(100, '\n');
+	}
+	while (amount < 500)
+	{
+		cout << "\n\t\t\tKindly Enter amount more then or equal to 500 to deposit";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << "." << endl;
+		cout << "\n\t\t\tEnter the amount again to be deposited : ";
+		while (!(cin >> amount))
+		{
+			cout << "\n\t\t\tError! Please Enter Your Amount Correctly";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << "." << endl;
+			cout << "\n\t\t\tEnter the amount again to be deposited : ";
+			cin.clear();
+			cin.ignore(100, '\n');
+		}
+	}
+	balance += amount;
+	ofstream outfile;
+	outfile.open("atm_data.txt");
+	outfile << name << endl;
+	outfile << password << endl;
+	outfile << balance << endl;
+	outfile.close();
+	cout << "\n\t\t\tAmount successfully deposited.";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << "." << endl;
+	cout << "\n\t\t\tYour New Balance : " << balance;
+	Sleep(2000);
+	cout << "\n";
+	cout << "\n\t\t\tPress any key to go back to Menu page";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	_getch();
+}
+
+void atm::withdraw()
+{
+	int amount, deduction;
+	cout << "\n\t\t\tEnter the amount to be withdrawn : ";
+	while (!(cin >> amount))
+	{
+		cout << "\n\t\t\tError! Please Enter Your Amount Correctly";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << "." << endl;
+		cout << "\n\t\t\tEnter the amount again to be withdrawn : ";
+		cin.clear();
+		cin.ignore(100, '\n');
+	}
+	while (amount < 500) {
+		cout << "\n\t\t\tKindly Enter amount more then or equal to 500 to withdraw";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << "." << endl;
+		cout << "\n\t\t\tEnter the amount again to be withdrawn : ";
+		while (!(cin >> amount))
+		{
+			cout << "\n\t\t\tError! Please Enter Your Amount Correctly";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << "." << endl;
+			cout << "\n\t\t\tEnter the amount again to be withdrawn : ";
+			cin.clear();
+			cin.ignore(100, '\n');
+		}
+	}
+	if (balance < 500)
+	{
+		cout << "\n\t\t\tYour Account balance is less then 500 you cannot withdraw any amount less then 500";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		return;
+	}
+	if (amount > balance)
+	{
+		cout << "\n\t\t\tInsufficient balance.\n\n";
+		return;
+	}
+	else if (balance < 520)
+	{
+		cout << "\n\t\t\tYou cannot withdraw this amount because you don't have Enough Balance for Withdraw Charges";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		cout << "\n\t\t\tTry again after Depositing More Balance.\n\n";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		return;
+	}
+	else {
+		int x = amount / 500;
+		deduction = x * 20;
+		balance -= (amount + deduction);
+	}
+
+	ofstream outfile;
+	outfile.open("atm_data.txt");
+	outfile << name << endl;
+	outfile << password << endl;
+	outfile << balance << endl;
+	outfile.close();
+	cout << "\n\t\t\tAmount successfully withdrawn";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".\n";
+	cout << "\n\t\t\tCharges for withdrawn : " << deduction;
+	Sleep(1000);
+	cout << "\n";
+	cout << "\n\t\t\tYour New Balance : " << balance;
+	Sleep(1000);
+	cout << "\n";
+	cout << "\n\t\t\tPress any key to go back to Menu page.";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	_getch();
+}
+
+void atm::transfer()
+{
+	int amount, deduction;
+	char accounttransfer[20];
+	cout << "\n\t\t\tEnter the name of the account that you want to transfer : ";
+	cin >> accounttransfer;
+	cout << "\n\t\t\tEnter the amount to be transfered : ";
+	while (!(cin >> amount))
+	{
+		cout << "\n\t\t\tError! Please Enter Your Amount Correctly";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << "." << endl;
+		cout << "\n\t\t\tEnter the amount again to transfer : ";
+		cin.clear();
+		cin.ignore(100, '\n');
+	}
+	while (amount < 500) {
+		cout << "\n\t\t\tKindly Enter amount more then or equal to 500 to transfer";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << "." << endl;
+		cout << "\n\t\t\tEnter the amount again to transfer : ";
+		while (!(cin >> amount))
+		{
+			cout << "\n\t\t\tError! Please Enter Your Amount Correctly";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << "." << endl;
+			cout << "\n\t\t\tEnter the amount again to transfer : ";
+			cin.clear();
+			cin.ignore(100, '\n');
+		}
+	}
+	if (balance < 500)
+	{
+		cout << "\n\t\t\tYour Account balance is less then 500 you cannot transfer any amount less then 500";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		return;
+	}
+	if (amount > balance)
+	{
+		cout << "\n\t\t\tInsufficient balance.\n\n";
+		return;
+	}
+	else if (balance < 515)
+	{
+		cout << "\n\t\t\tYou cannot transfer this amount because you don't have Enough Balance for transfer Charges";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		cout << "\n\t\t\tTry again after Depositing More Balance.\n\n";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		Sleep(0500);
+		cout << ".";
+		return;
+	}
+	else {
+		int x = amount / 500;
+		deduction = x * 15;
+		balance -= (amount + deduction);
+	}
+	ofstream outfile;
+	outfile.open("atm_data.txt");
+	outfile << name << endl;
+	outfile << password << endl;
+	outfile << balance << endl;
+	outfile.close();
+	cout << "\n\t\t\tAmount successfully transfered";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".\n";
+	cout << "\n\t\t\tCharges for Trasnfer : " << deduction;
+	Sleep(1000);
+	cout << "\n";
+	cout << "\n\t\t\tYour New Balance : " << balance;
+	Sleep(1000);
+	cout << "\n";
+	cout << "\n\t\t\tPress any key to go back to Menu page.";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	_getch();
+}
+
+void atm::check_balance()
+{
+	cout << "\n\t\t\tYour current balance is : " << balance << endl;
+	cout << "\n\t\t\tPress any key to go back to Menu page.";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	_getch();
+}
+
+void atm::account_details() {
+	cout << "\n\t\t\tAccount details\n";
+	cout << "\n\t\t\tName of Account : " << name << endl;
+	cout << "\n\t\t\tBalance of Account : " << balance << endl;
+	cout << "\n\t\t\tPress Any Key to go back to main menu";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	Sleep(0500);
+	cout << ".";
+	_getch();
+	return;
+}
+
+void atm::delete_account()
+{
+	char temp_name[20], temp_password[20];
+	ifstream infile;
+	infile.open("atm_data.txt");
+	cout << "\n\t\t\t-----------DELETE ACCOUNT-----------\n";
+	cout << "\n\n\t\t\tEnter your name : ";
+	cin >> temp_name;
+	cout << "\n\t\t\tEnter your password : ";
+	cin >> temp_password;
+
+	while (!infile.eof())
+	{
+		infile >> name;
+		infile >> password;
+		infile >> balance;
+		if (strcmp(name, temp_name) == 0 && strcmp(password, temp_password) == 0)
+		{
+			ofstream outfile;
+			outfile.open("atm_data.txt");
+			cout << "\n\t\t\tYour account is successfully deleted.";
+			outfile.close();
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << ".";
+			cout << endl;
+			cout << "\n\t\t\tPress any key to go back to Menu page.";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << ".";
+			Sleep(0500);
+			cout << ".";
+			_getch();
+			return;
+		}
+	}
+	infile.close();
+	cout << "\n\t\t\tInvalid username or password";
+	Sleep(2000);
+	clear_screen();
+	delete_account();
+}
+
+void atm::clear_screen()
+{
+	system("cls");
+}
+
+class working :public atm {
+public:
+	working() {
+		char ch;
+		while (1)
+		{
+			cout << "\n\t\t\t-----------ATM MACHINE-----------\n";
+			cout << "\n\t\t\t1.Sign Up";
+			cout << "\n\t\t\t2.Login";
+			cout << "\n\t\t\t3.Exit\n";
+			cout << "\n\t\t\tEnter your choice : ";
+			cin >> ch;
+			switch (ch)
+			{
+			case '1':
+				clear_screen();
+				signup();
+				clear_screen();
+				break;
+			case '2':
+				clear_screen();
+				login();
+				clear_screen();
+				if (strcmp(name, "") == 0 && strcmp(password, "") == 0) //This if statement checks if the strings "name" and "password" are both empty (i.e. both strings are empty strings). If this is the case, the statement following the if statement will be executed (in this case, the statement is "break;").
+					break;
+				while (1)
+				{
+					cout << "\n\t\t\t-----------MENU-----------\n";
+					cout << "\n\t\t\t1.Deposit Amount";
+					cout << "\n\t\t\t2.Withdraw Amount";
+					cout << "\n\t\t\t3.Transfer Amount";
+					cout << "\n\t\t\t4.Check Balance";
+					cout << "\n\t\t\t5.Account Details";
+					cout << "\n\t\t\t6.Delete Account";
+					cout << "\n\t\t\t7.Logout\n";
+
+					cout << "\n\t\t\tEnter your choice : ";
+					cin >> ch;
+					switch (ch)
+					{
+					case '1':
+						deposit();
+						clear_screen();
+						break;
+					case '2':
+						withdraw();
+						clear_screen();
+						break;
+					case '3':
+						transfer();
+						clear_screen();
+						break;
+					case '4':
+						check_balance();
+						clear_screen();
+						break;
+					case '5':
+						account_details();
+						clear_screen();
+						break;
+					case '6':
+						delete_account();
+						clear_screen();
+						break;
+					case '7':
+						clear_screen();
+						break;
+					default:
+						cout << "\n\t\t\tInvalid Choice.\n\n";
+					}
+					if (ch == '6' || ch == '7')
+						break;
+				}
+				break;
+			case '3':
+				cout << "\n\t\t\tThanks for using our ATM Machine";
+				Sleep(1000);
+				cout << ".";
+				Sleep(1000);
+				cout << ".";
+				Sleep(1000);
+				cout << ".";
+				cout << "\n\n";
+				return;
+			default:
+				cout << "\n\t\t\tInvalid Choice.\n\n";
+			}
+		}
+	}
+};
+
+int main()
+{
+	system
+	working atm;
+	return 0;
+}
